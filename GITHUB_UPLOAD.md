@@ -58,11 +58,50 @@ git commit -m "Update plan: ..."
 git push
 ```
 
+## 常见问题：ghfast.top 代理导致认证失败
+
+若 global git 配置了：
+
+```ini
+url.https://ghfast.top/https://github.com/.insteadof=https://github.com/
+```
+
+则 `git push` 会把请求转到 `ghfast.top`，**无法使用 `gh` 的 token**，报错：
+
+```text
+Invalid username or token. Password authentication is not supported
+```
+
+### 解决方式（任选其一）
+
+**A. 使用项目自带脚本（推荐，不改 global 配置）**
+
+```bash
+cd /dev/gpc_code/docs/agent_search
+chmod +x scripts/push_github.sh
+./scripts/push_github.sh
+```
+
+**B. 单次 push 手动绕过**
+
+```bash
+cd /dev/gpc_code/docs/agent_search
+GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_SYSTEM=/dev/null \
+  git -c 'credential.helper=!/usr/bin/gh auth git-credential' \
+  push -u https://github.com/JWgpc/agent-search-plan.git main
+```
+
+**C. 永久去掉 ghfast 重写（影响所有仓库）**
+
+```bash
+git config --global --unset 'url.https://ghfast.top/https://github.com/.insteadof'
+```
+
 ## 当前状态
 
 | 项 | 状态 |
 |----|------|
 | 本地 git 仓库 | `/dev/gpc_code/docs/agent_search/.git` |
 | 分支 | `main` |
-| 首次提交 | `a059721` — 18 个计划文档 |
-| GitHub 远程 | **未配置**（需 `gh auth login` 后执行上方命令） |
+| GitHub 远程 | https://github.com/JWgpc/agent-search-plan |
+| 推送状态 | 已推送至 `main` |
