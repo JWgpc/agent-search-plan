@@ -43,9 +43,9 @@
 
 1. **`TASK_STATUS.md`** — 查看当前进度与待办  
 2. `00_overview.md` — 了解为什么要做、当前缺口在哪  
-2. `01_human_agent_roles.md` — 明确谁做什么  
-3. `phases/phase1_landscape.md` — 从调研阶段开始逐步推进  
-4. `03_risks_and_open_questions.md` — 跟踪待拍板事项  
+3. `01_human_agent_roles.md` — 明确谁做什么  
+4. `phases/phase1_landscape.md` — 从调研阶段开始逐步推进  
+5. `03_risks_and_open_questions.md` — 跟踪待拍板事项  
 
 ## 与代码目录的对应关系（规划，尚未实现）
 
@@ -61,5 +61,6 @@
 
 | 日期 | 变更 |
 |------|------|
+| 2026-08-26 | 新增 `TASK_STATUS.md` 任务状态记录 |
 | 2026-08-26 | 新增 `TASK_STATUS.md` 任务状态记录 |
 | 2026-08-26 | 初版计划文档落地 |
