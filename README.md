@@ -7,6 +7,7 @@
 
 | 文档 | 说明 | 状态 |
 |------|------|------|
+| **[TASK_STATUS.md](./TASK_STATUS.md)** | **任务状态记录（各阶段 Agent / 决策者待办）** | 维护中 |
 | [00_overview.md](./00_overview.md) | 背景、目标、范围、现状诊断 | 初稿 |
 | [01_human_agent_roles.md](./01_human_agent_roles.md) | 六阶段人机分工总表 | 初稿 |
 | [02_milestones_timeline.md](./02_milestones_timeline.md) | 里程碑、时间线、依赖关系 | 初稿 |
@@ -40,7 +41,8 @@
 
 ## 建议阅读顺序
 
-1. `00_overview.md` — 了解为什么要做、当前缺口在哪  
+1. **`TASK_STATUS.md`** — 查看当前进度与待办  
+2. `00_overview.md` — 了解为什么要做、当前缺口在哪  
 2. `01_human_agent_roles.md` — 明确谁做什么  
 3. `phases/phase1_landscape.md` — 从调研阶段开始逐步推进  
 4. `03_risks_and_open_questions.md` — 跟踪待拍板事项  
@@ -59,4 +61,5 @@
 
 | 日期 | 变更 |
 |------|------|
+| 2026-08-26 | 新增 `TASK_STATUS.md` 任务状态记录 |
 | 2026-08-26 | 初版计划文档落地 |
