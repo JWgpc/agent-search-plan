@@ -15,16 +15,16 @@
 
 以下事项需在对应阶段由**人**拍板；Agent 可整理选项与利弊。
 
-| ID | 问题 | 建议决策窗口 | 选项 | 状态 |
-|----|------|--------------|------|------|
-| D1 | 三类能力是否并行还是分阶段？ | 阶段 1 末 | A 并行 / B 先 web+KB 后 browser | **待定** |
-| D2 | 主训练路线？ | 阶段 3 | SFT+RL / RL-only / SFT-only | **待定** |
-| D3 | Agent 评测主指标？ | 阶段 2 初 | Pass@1 / Pass^3 | **待定** |
-| D4 | Baseline checkpoint？ | 阶段 2 初 | Ornith-9B / Qwen3.5-9B / 其他 | **待定** |
-| D5 | 是否接入 BrowseComp / GAIA？ | 阶段 2 | 全量 / subset / 暂不 | **待定** |
-| D6 | HotpotQA/NQ 本地 retriever 是否部署？ | 阶段 3 | 本地 FAISS / 仅 API search | **待定** |
-| D7 | 搜索 RL 与 ClawGym 2000 是否混训？ | 阶段 5 前 | 独立 / 混合比例 | **待定** |
-| D8 | 相对 baseline 提升目标 X%？ | 阶段 3 | 数值 | **待定** |
+| ID | 问题 | 建议决策窗口 | 选项 | Agent 建议 | 状态 |
+|----|------|--------------|------|------------|------|
+| D1 | 三类能力是否并行还是分阶段？ | 阶段 1 末 | A 并行 / B 先 web+KB 后 browser | **B**：先 web+KB，browser 与路线 D 并行 POC；QCB browser 仅 ~3 任务 | **待定** |
+| D2 | 主训练路线？ | 阶段 3 | SFT+RL / RL-only / SFT-only | **SFT+RL（路线 A）** 优先；B 作 QA 冷启动备选；C 作低成本 baseline | **待定** |
+| D3 | Agent 评测主指标？ | 阶段 2 初 | Pass@1 / Pass^3 | 开发期 Pass@1；对外对标 Pass^3 | **待定** |
+| D4 | Baseline checkpoint？ | 阶段 2 初 | Ornith-9B / Qwen3.5-9B / 其他 | 待定（需人指定当前生产 ckpt） | **待定** |
+| D5 | 是否接入 BrowseComp / GAIA？ | 阶段 2 | 全量 / subset / 暂不 | subset 冒烟；全量延后 | **待定** |
+| D6 | HotpotQA/NQ 本地 retriever 是否部署？ | 阶段 3 | 本地 FAISS / 仅 API search | **冒烟用 Serper/mock**；wiki-18 132GB **可选、非默认** | **待定** |
+| D7 | 搜索 RL 与 ClawGym 2000 是否混训？ | 阶段 5 前 | 独立 / 混合比例 | 先 **独立子集**（R6 缓解） | **待定** |
+| D8 | 相对 baseline 提升目标 X%？ | 阶段 3 | 数值 | L2 子集 Pass@1 **+5%** 作冒烟参考 | **待定** |
 
 ## 决策记录
 

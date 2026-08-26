@@ -5,7 +5,7 @@
 > 更新本文件后请同步修改「最后更新」日期，重大变更可 commit 并 push。
 
 **最后更新**：2026-08-26  
-**当前阶段**：阶段 1（未启动）  
+**当前阶段**：阶段 1（Agent 调研已完成，待人评审 sign-off）  
 **GitHub**：[JWgpc/agent-search-plan](https://github.com/JWgpc/agent-search-plan)
 
 ---
@@ -15,7 +15,7 @@
 | 阶段 | 名称 | 阶段状态 | 门禁 |
 |------|------|----------|------|
 | 0 | 计划文档落地 | 已完成 | — |
-| 1 | 信息收集与调研 | 待办 | 未通过 |
+| 1 | 信息收集与调研 | 进行中 | 未通过 |
 | 2 | Benchmark 与 Baseline | 待办 | 未通过 |
 | 3 | 方法决策与冒烟测试 | 待办 | 未通过 |
 | 4 | 数据准备与质量核验 | 待办 | 未通过 |
@@ -49,20 +49,21 @@
 ## 阶段 1 — 信息收集与调研
 
 **周期**：~2 周  
-**阶段状态**：待办  
+**阶段状态**：进行中（Agent 任务已完成，待人 P1-H01～H04）  
 **目标**：输出《Search Capability Landscape Report》  
-**详细计划**：[phases/phase1_landscape.md](./phases/phase1_landscape.md)
+**详细计划**：[phases/phase1_landscape.md](./phases/phase1_landscape.md)  
+**交付报告**：[reports/search_landscape_report.md](./reports/search_landscape_report.md)
 
 ### Agent
 
 | ID | 任务 | 状态 | 备注 |
 |----|------|------|------|
-| P1-A01 | 检索 arXiv / GitHub / HuggingFace 相关项目与论文 | 待办 | 方向 A–E |
-| P1-A02 | 阅读仓库内 Search-R1 README、Claw-Eval grader、QCB 搜索类任务并摘要 | 待办 | |
-| P1-A03 | 填充「方法 × 能力（web/KB/browser）× 可复用性」对比表（≥10 行） | 待办 | |
-| P1-A04 | 撰写 `reports/search_landscape_report.md` 初稿 | 待办 | |
-| P1-A05 | 输出 3–5 条方法 shortlist（含 OpenClaw 集成难度与风险） | 待办 | |
-| P1-A06 | 更新 `03_risks_and_open_questions.md` 中 D1 等决策选项与建议 | 待办 | |
+| P1-A01 | 检索 arXiv / GitHub / HuggingFace 相关项目与论文 | 已完成 | 方向 A–E，见 landscape report §3–7 |
+| P1-A02 | 阅读仓库内 Search-R1 README、Claw-Eval grader、QCB 搜索类任务并摘要 | 已完成 | 见 report §8 |
+| P1-A03 | 填充「方法 × 能力（web/KB/browser）× 可复用性」对比表（≥10 行） | 已完成 | report §9，12 行 |
+| P1-A04 | 撰写 `reports/search_landscape_report.md` 初稿 | 已完成 | v0.1 |
+| P1-A05 | 输出 3–5 条方法 shortlist（含 OpenClaw 集成难度与风险） | 已完成 | 路线 A–D，report §10 |
+| P1-A06 | 更新 `03_risks_and_open_questions.md` 中 D1 等决策选项与建议 | 已完成 | D1/D2/D6 Agent 建议 |
 
 ### 决策者
 

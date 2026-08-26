@@ -8,6 +8,7 @@
 | 文档 | 说明 | 状态 |
 |------|------|------|
 | **[TASK_STATUS.md](./TASK_STATUS.md)** | **任务状态记录（各阶段 Agent / 决策者待办）** | 维护中 |
+| [reports/search_landscape_report.md](./reports/search_landscape_report.md) | 阶段 1 Landscape 调研报告 | v0.1 |
 | [00_overview.md](./00_overview.md) | 背景、目标、范围、现状诊断 | 初稿 |
 | [01_human_agent_roles.md](./01_human_agent_roles.md) | 六阶段人机分工总表 | 初稿 |
 | [02_milestones_timeline.md](./02_milestones_timeline.md) | 里程碑、时间线、依赖关系 | 初稿 |
@@ -63,4 +64,5 @@
 |------|------|
 | 2026-08-26 | 新增 `TASK_STATUS.md` 任务状态记录 |
 | 2026-08-26 | 新增 `TASK_STATUS.md` 任务状态记录 |
-| 2026-08-26 | 初版计划文档落地 |
+| 2026-08-26 | 阶段 1 Landscape Report v0.1（Agent 任务完成） |
+| 2026-08-26 | 新增 `TASK_STATUS.md` 任务状态记录 |

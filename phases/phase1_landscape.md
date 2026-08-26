@@ -106,7 +106,7 @@
 | 项 | 状态 |
 |----|------|
 | 计划文档 | ✅ 已落地 |
-| Landscape Report | ⬜ 未开始 |
-| 人工评审 | ⬜ 未开始 |
+| Landscape Report | ✅ v0.1 初稿（[reports/search_landscape_report.md](../reports/search_landscape_report.md)） |
+| 人工评审 | ⬜ 待 P1-H02 / P1-H04 |
 
-**下一步**：Agent 撰写 `reports/search_landscape_report.md` 初稿 → 人评审。
+**下一步**：决策者评审 report → P1-H01～H04 sign-off → 进入阶段 2。
