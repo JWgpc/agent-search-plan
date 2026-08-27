@@ -10,6 +10,7 @@
 | R4 | Browser 数据稀缺 | 进度滞后 | v1 先 web+KB，browser 后补 | 产品/人 |
 | R5 | 评测与训练工具不一致 | 虚假提升 | 统一 OpenClaw tool schema | 工程 |
 | R6 | ClawGym 并行超时 | 无法大规模 search RL | 独立子集、低并发、mock | 工程 |
+| R7 | **TRACE turn reward 实现歧义**（opener 未定义、thinking 标签缺失） | 复现 POC 时 scoring OOD / turn credit 噪声 | 见 [important_references.md](./reports/important_references.md) TRACE-Q1～Q3；POC 前写清 scoring 序列 + ablation | 算法 |
 
 ## 待决策项（Open Questions）
 
@@ -25,6 +26,7 @@
 | D6 | HotpotQA/NQ 本地 retriever 是否部署？ | 阶段 3 | 本地 FAISS / 仅 API search | **冒烟用 Serper/mock**；wiki-18 132GB **可选、非默认** | **待定** |
 | D7 | 搜索 RL 与 ClawGym 2000 是否混训？ | 阶段 5 前 | 独立 / 混合比例 | 先 **独立子集**（R6 缓解） | **待定** |
 | D8 | 相对 baseline 提升目标 X%？ | 阶段 3 | 数值 | L2 子集 Pass@1 **+5%** 作冒烟参考 | **待定** |
+| D9 | TRACE turn auxiliary 是否纳入阶段 3 POC？ | 阶段 3 | 是 / 否 / 延后 | **倾向是**，但须先闭合 TRACE-Q1～Q3（opener + thinking 模板） | **待定** |
 
 ## 决策记录
 
@@ -32,7 +34,7 @@
 
 | 日期 | ID | 决策 | 决策人 | 备注 |
 |------|-----|------|--------|------|
-| — | — | （暂无） | — | — |
+| 2026-08-27 | P1-LIT-01 | **TRACE 标为重要参考文献；决策者已精读** | 决策者 | turn reward 机制认可值得 POC；**禁止**未文档化地将 GT 裸拼到 \(S_k\)；opener/thinking 疑问见 important_references.md |
 
 ## 外部依赖审批清单
 

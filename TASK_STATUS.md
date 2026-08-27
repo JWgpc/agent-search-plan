@@ -4,8 +4,8 @@
 > **状态枚举**：`待办` | `进行中` | `已完成` | `阻塞` | `跳过`  
 > 更新本文件后请同步修改「最后更新」日期，重大变更可 commit 并 push。
 
-**最后更新**：2026-08-26  
-**当前阶段**：阶段 1（Agent 调研已完成，待人评审 sign-off）  
+**最后更新**：2026-08-27  
+**当前阶段**：阶段 1（Agent 调研已完成；TRACE 决策者已精读，待人 P1-H01～H04 sign-off）  
 **GitHub**：[JWgpc/agent-search-plan](https://github.com/JWgpc/agent-search-plan)
 
 ---
@@ -73,6 +73,13 @@
 | P1-H02 | 评审 Landscape Report，剔除与 OpenClaw 工具栈不兼容方案 | 待办 | |
 | P1-H03 | 批准外部依赖（Serper/Brave API、wiki-18 索引等） | 待办 | |
 | P1-H04 | 阶段 1 门禁 sign-off | 待办 | 见 phase1 DoD |
+
+### 重要文献 · 决策者精读（阶段 1 延伸）
+
+| ID | 文献 | 状态 | 备注 |
+|----|------|------|------|
+| P1-LIT-01 | **TRACE** arXiv:2607.13988 | **决策者已精读** | ⭐ 重要参考文献；turn reward POC 候选；疑问 TRACE-Q1～Q3 见 [important_references.md](./reports/important_references.md) |
+| P1-LIT-02 | ABSeeker arXiv:2608.05102 | 已对照精读 | 与 TRACE 合读，见 trace_vs_abseeker_credit.md |
 
 ---
 
