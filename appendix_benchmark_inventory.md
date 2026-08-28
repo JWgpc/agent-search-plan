@@ -86,14 +86,24 @@ C23zh_academic_writing
 2. `task_00048_baidu_qianfan_api_integration_test_document`
 3. `task_00088_personal_assistant_security_policy_assessment`
 
-## 建议 v0.1 最小评测包
+## 建议 v0.1 最小评测包（已定 — 2026-08-28）
+
+> 完整说明：[reports/search_benchmark_decision.md](./reports/search_benchmark_decision.md)
+
+| 包 ID | 组成 | 题量 |
+|-------|------|------|
+| **`bcp_closed`** | BrowseComp-Plus 闭集 deep search | **830**（smoke 100） |
+| **`claw_web_search`** | Claw-Eval `web_search`/`web_fetch` 全量 | **65**（清单见 `search_eval/configs/task_lists/`） |
+| **`tau3_banking`** | τ³-Banking `banking_knowledge`，`--retrieval-config bm25` | **97** |
+
+## 建议 v0.1 最小评测包（历史草案 · 已被上表替代）
 
 | 包 ID | 组成 | 预估任务数 |
 |-------|------|------------|
-| `l2_web_core` | Claw-Eval web 子集（人工 curated）+ T073 | ~30–65 |
-| `l2_kb_core` | T015/T016 + QCB memory 核心 ~10 | ~12 |
+| `l2_web_core` | Claw-Eval web 子集 + T073 | ~30–65 |
+| `l2_kb_core` | T015/T016 + QCB memory | ~12 |
 | `l2_qcb_research` | QCB Research 7 | 7 |
-| `l1_qa_smoke` | HotpotQA/NQ dev 各 100（Search-R1 格式） | 200 |
+| `l1_qa_smoke` | HotpotQA/NQ dev 各 100 | 200 |
 
 ## 待接入（无现成 harness）
 

@@ -5,7 +5,7 @@
 > 更新本文件后请同步修改「最后更新」日期，重大变更可 commit 并 push。
 
 **最后更新**：2026-08-28  
-**当前阶段**：阶段 1（Agent 调研已完成；TRACE 决策者已精读；**OpenResearcher 高参考认定**；阶段 4/5 数据与环境文档已落地；待人 P1-H01～H04 sign-off）  
+**当前阶段**：阶段 2 进行中（**v0.1 Benchmark 三套件已定**；baseline 待跑）  
 **GitHub**：[JWgpc/agent-search-plan](https://github.com/JWgpc/agent-search-plan)
 
 ---
@@ -16,7 +16,7 @@
 |------|------|----------|------|
 | 0 | 计划文档落地 | 已完成 | — |
 | 1 | 信息收集与调研 | 进行中 | 未通过 |
-| 2 | Benchmark 与 Baseline | 待办 | 未通过 |
+| 2 | Benchmark 与 Baseline | 进行中 | 未通过 |
 | 3 | 方法决策与冒烟测试 | 待办 | 未通过 |
 | 4 | 数据准备与质量核验 | 待办 | 未通过 |
 | 5 | 环境构建与训练 | 待办 | 未通过 |
@@ -87,17 +87,19 @@
 ## 阶段 2 — Benchmark 设计与 Baseline
 
 **周期**：~2 周（与阶段 4 部分并行）  
-**阶段状态**：待办  
+**阶段状态**：进行中（v0.1 套件已定；baseline 待跑）  
 **目标**：分层评测体系 + baseline 分数  
-**详细计划**：[phases/phase2_benchmark.md](./phases/phase2_benchmark.md)
+**详细计划**：[phases/phase2_benchmark.md](./phases/phase2_benchmark.md)  
+**选型文档**：[reports/search_benchmark_decision.md](./reports/search_benchmark_decision.md)
 
 ### Agent
 
 | ID | 任务 | 状态 | 备注 |
 |----|------|------|------|
-| P2-A01 | 从 Claw-Eval / QCB 导出并 curated 搜索相关 task 清单 | 待办 | 附录为扫描初稿 |
-| P2-A02 | 搭建 `search_eval/` 目录结构与 README | 待办 | |
-| P2-A03 | 编写 `benchmark_suite.yaml` 与 task_lists | 待办 | |
+| P2-A01 | 从 Claw-Eval 导出 web 搜索 task 清单 | **已完成** | 65 题 → `search_eval/configs/task_lists/claw_eval_web_search.txt` |
+| P2-A02 | 搭建 `search_eval/` 目录结构与 README | **已完成** | v0.1 配置 |
+| P2-A03 | 编写 `benchmark_suite.yaml` 与 task_lists | **已完成** | 三套件 BCP + Claw + τ³-Banking |
+| P2-A07 | 撰写 Benchmark 调研与选型文档 | **已完成** | search_benchmark_decision.md |
 | P2-A04 | 编写 runner / 聚合脚本（Claw-Eval、QCB、Search-R1 eval） | 待办 | |
 | P2-A05 | 对接 SGLang 部署脚本，跑 v0.1 最小评测套件 | 待办 | 需 API key |
 | P2-A06 | 生成 `reports/baseline_report.md` 与 `baselines/{model}/summary.json` | 待办 | |
@@ -109,7 +111,7 @@
 | P2-H01 | 确定主指标 Pass@1 vs Pass^3（D3） | 待办 | |
 | P2-H02 | 选定 baseline 模型 checkpoint（D4） | 待办 | |
 | P2-H03 | 配置 SERP / Brave 等 API 密钥 | 待办 | |
-| P2-H04 | 审批 BrowseComp / GAIA 等外部 benchmark API 成本（D5） | 待办 | |
+| P2-H04 | 审批 BrowseComp / GAIA 等外部 benchmark API 成本（D5） | **已定** | v0.1 用 BCP 闭集（无开网 API）；GAIA 延后 |
 | P2-H05 | 审核 baseline 结果，排除 infra 误判 | 待办 | |
 | P2-H06 | 阶段 2 门禁 sign-off | 待办 | D3、D4 写入 decision_log |
 

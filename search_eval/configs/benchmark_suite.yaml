@@ -1,0 +1,55 @@
+# Search eval suite v0.1 — see docs/agent_search/reports/search_benchmark_decision.md
+version: "0.1"
+decision_date: "2026-08-28"
+
+suites:
+  bcp_closed:
+    label: BrowseComp-Plus
+    source: tevatron / openresearcher
+    num_tasks: 830
+    smoke_limit: 100
+    metric: accuracy  # short-answer EM / match
+    search_backend: local  # bm25 or dense; no live web API
+    data:
+      queries: https://huggingface.co/datasets/Tevatron/browsecomp-plus
+      corpus: https://huggingface.co/datasets/Tevatron/browsecomp-plus-corpus
+      indexes: https://huggingface.co/datasets/Tevatron/browsecomp-plus-indexes
+    harness_repo: https://github.com/TIGER-AI-Lab/OpenResearcher
+    notes: Align with TRACE / OpenResearcher closed-set eval; not OpenResearcher training corpus
+
+  claw_web_search:
+    label: Claw-Eval Web Search
+    source: claw_eval
+    repo_path: claw_eval_new/claw-eval
+    num_tasks: 65
+    task_list: configs/task_lists/claw_eval_web_search.txt
+    metric: pass_at_1  # official Claw-Eval uses pass^3 with trials=3
+    trials: 3
+    requires:
+      serp_dev_key: true  # 63/65 tasks use web_real; 2 mock web exempt
+      judge_llm: true
+      docker_sandbox: recommended
+
+  tau3_banking:
+    label: "τ³-Banking (banking_knowledge)"
+    source: tau2_bench
+    repo_path: tau2-bench
+    domain: banking_knowledge
+    num_tasks: 97
+    num_documents: 698
+    metric: pass_at_1
+    trials: 1
+    retrieval_config: bm25  # offline default; no search/embedding API key
+    requires:
+      agent_llm: true
+      user_sim_llm: true
+    papers:
+      - https://arxiv.org/abs/2603.04370
+      - https://arxiv.org/abs/2603.13686
+
+reporting:
+  aggregate: per_suite  # no weighted overall score in v0.1
+  primary_axes:
+    - closed_deep_search
+    - open_web_agent
+    - kb_retrieval_dialogue
