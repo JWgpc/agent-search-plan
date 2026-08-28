@@ -11,7 +11,9 @@
 | [reports/search_landscape_report.md](./reports/search_landscape_report.md) | 阶段 1 Landscape 调研报告 | v0.1 |
 | [reports/five_papers_deep_dive.md](./reports/five_papers_deep_dive.md) | 五篇 agent search 代表论文深度解读 | v0.1 |
 | [reports/trace_vs_abseeker_credit.md](./reports/trace_vs_abseeker_credit.md) | TRACE vs ABSeeker credit 专篇（**TRACE：决策者已精读**） | v0.2 |
-| [reports/important_references.md](./reports/important_references.md) | **重要参考文献登记**（精读状态、复现疑问） | v0.1 |
+| [reports/important_references.md](./reports/important_references.md) | **重要参考文献登记**（TRACE 精读；**OpenResearcher 高参考**） | v0.2 |
+| [reports/rl_search_data_landscape.md](./reports/rl_search_data_landscape.md) | RL 搜索训练数据与合成项目调研（阶段 4 输入） | v0.1 |
+| [reports/openresearcher_env_setup.md](./reports/openresearcher_env_setup.md) | OpenResearcher 环境构建 + Claw 适配（阶段 4/5） | v0.1 |
 | [00_overview.md](./00_overview.md) | 背景、目标、范围、现状诊断 | 初稿 |
 | [01_human_agent_roles.md](./01_human_agent_roles.md) | 六阶段人机分工总表 | 初稿 |
 | [02_milestones_timeline.md](./02_milestones_timeline.md) | 里程碑、时间线、依赖关系 | 初稿 |
@@ -70,5 +72,5 @@
 | 2026-08-26 | 阶段 1 Landscape Report v0.1（Agent 任务完成） |
 | 2026-08-27 | 新增五篇论文深度解读 `reports/five_papers_deep_dive.md` |
 | 2026-08-27 | 新增 TRACE vs ABSeeker credit 专篇 `reports/trace_vs_abseeker_credit.md` |
-| 2026-08-27 | TRACE 标重要参考文献、决策者已精读；新增 `reports/important_references.md`（turn reward 疑问 TRACE-Q1～Q3） |
+| 2026-08-28 | 新增 RL 数据调研、OpenResearcher 环境专篇；决策者认定 OR 高参考价值 |
 | 2026-08-26 | 新增 `TASK_STATUS.md` 任务状态记录 |

@@ -1,7 +1,7 @@
 # 重要参考文献登记
 
 > Agent Search 能力提升项目 · 决策者精读与复现风险跟踪  
-> **最后更新**：2026-08-27
+> **最后更新**：2026-08-28
 
 本表记录 **对训练路线/复现有直接影响的论文**；「决策者已精读」表示决策者已与 Agent 完成机制讨论，可作为阶段 3 POC 设计依据。**未解决疑问**须在复现前澄清或做 ablation。
 
@@ -14,7 +14,44 @@
 | **TRACE** — Turn-level Reward Assignment via Credit Estimation | [2607.13988](https://arxiv.org/html/2607.13988) | **高** | **已精读**（2026-08-27） | [trace_vs_abseeker_credit.md](./trace_vs_abseeker_credit.md) §2 | **是**（ClawGym GRPO + turn auxiliary POC） |
 | ABSeeker — Answer-Backtracked Credit Assignment | [2608.05102](https://arxiv.org/html/2608.05102) | 高 | 已对照读（与 TRACE 合读） | [trace_vs_abseeker_credit.md](./trace_vs_abseeker_credit.md) §3 | 待定（ABC-SFT reweight 优先于全链路） |
 | LiveBrowseComp | [2605.28721](https://arxiv.org/abs/2605.28721) | 中 | Agent 调研 | [five_papers_deep_dive.md](./five_papers_deep_dive.md) §1 | 评测参考 |
-| OpenSeeker / DeepResearcher 等 | 见 five_papers | 中 | Agent 调研 | [five_papers_deep_dive.md](./five_papers_deep_dive.md) | 数据/环境参考 |
+| **OpenResearcher** — Fully Open Deep Research Pipeline | [2603.20278](https://arxiv.org/abs/2603.20278) | **高** | **决策者认定参考价值较高**（2026-08-28） | [openresearcher_env_setup.md](./openresearcher_env_setup.md) · [rl_search_data_landscape.md](./rl_search_data_landscape.md) | **是**（闭集 Q+A + 本地检索 env；Claw 适配见专篇） |
+| OpenSeeker | [2603.15594](https://arxiv.org/abs/2603.15594) | 中 | Agent 调研 | [rl_search_data_landscape.md](./rl_search_data_landscape.md) §2.3 | SFT 数据备选 |
+| DeepResearcher 等 | 见 five_papers | 中 | Agent 调研 | [five_papers_deep_dive.md](./five_papers_deep_dive.md) | 开网 RL 参考 |
+
+---
+
+## OpenResearcher（2603.20278）— 决策者认定摘要
+
+**为何标为高参考价值（2026-08-28）**
+
+- **同时具备** 可下载 **Q+A**（Dataset）、**离线 corpus + 索引**、**本地检索服务代码**（`start_search_service.sh` + `backend.py`），满足 RL = prompt + GT + 搜索服务 三件套
+- 与 **TRACE** 同族闭集设定（FAISS + 长程 tool）；TRACE 合成训练题未 release 时，**Corpus-Gold-Doc（6102 Q+A）+ Dataset（97K 轨迹）** 是可落地的 RL/SFT 源
+- 97K 轨迹可支撑 **SFT 冷启动**；与 ClawGym search profile **分池并行** 可行
+
+**数据与代码 URL**
+
+| 类型 | URL |
+|------|-----|
+| 代码 | https://github.com/TIGER-AI-Lab/OpenResearcher |
+| 题源 Q+A（6102） | https://huggingface.co/datasets/OpenResearcher/OpenResearcher-Corpus-Gold-Doc |
+| 轨迹（97K） | https://huggingface.co/datasets/OpenResearcher/OpenResearcher-Dataset |
+| 检索语料 | https://huggingface.co/datasets/OpenResearcher/OpenResearcher-Corpus |
+| 索引 | https://huggingface.co/datasets/OpenResearcher/OpenResearcher-Indexes |
+
+**GPC 采纳方式（非 1:1 照搬）**
+
+| 采纳 | 不采纳 / 待适配 |
+|------|-----------------|
+| 闭集检索 + Q+A 作 GRPO smoke / 辅助训练池 | GPT-OSS native `browser.*` schema |
+| BrowseComp-Plus 闭集 eval 流程 | 默认脚本 BCP 语料当作训练 corpus（需改路径，见 env 专篇 §3.2） |
+| search/open 抽象 | 强制 `find` → Claw 用 `web_search` + `web_fetch`（**find 待看数据再定**） |
+
+**待实测（不阻塞文档落地）**
+
+- Claw `web_fetch` 与 OpenResearcher `open` 的正文长度分布 → 是否需页内 find  
+- Corpus+index 全量下载与 GPU Faiss 延迟 → RL 并发上限  
+
+**专篇**：[openresearcher_env_setup.md](./openresearcher_env_setup.md) · 数据调研：[rl_search_data_landscape.md](./rl_search_data_landscape.md)
 
 ---
 
@@ -52,3 +89,5 @@
 | 日期 | 变更 |
 |------|------|
 | 2026-08-27 | 初建；TRACE 标重要参考文献、决策者已精读；登记 TRACE-Q1～Q3 |
+| 2026-08-28 | OpenResearcher 标高参考价值（决策者认定）；专篇 rl_search_data_landscape + openresearcher_env_setup |
+| 2026-08-28 | OpenResearcher 小节补全 HF/GitHub URL 表 |

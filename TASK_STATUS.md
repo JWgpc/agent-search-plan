@@ -4,8 +4,8 @@
 > **状态枚举**：`待办` | `进行中` | `已完成` | `阻塞` | `跳过`  
 > 更新本文件后请同步修改「最后更新」日期，重大变更可 commit 并 push。
 
-**最后更新**：2026-08-27  
-**当前阶段**：阶段 1（Agent 调研已完成；TRACE 决策者已精读，待人 P1-H01～H04 sign-off）  
+**最后更新**：2026-08-28  
+**当前阶段**：阶段 1（Agent 调研已完成；TRACE 决策者已精读；**OpenResearcher 高参考认定**；阶段 4/5 数据与环境文档已落地；待人 P1-H01～H04 sign-off）  
 **GitHub**：[JWgpc/agent-search-plan](https://github.com/JWgpc/agent-search-plan)
 
 ---
@@ -80,6 +80,7 @@
 |----|------|------|------|
 | P1-LIT-01 | **TRACE** arXiv:2607.13988 | **决策者已精读** | ⭐ 重要参考文献；turn reward POC 候选；疑问 TRACE-Q1～Q3 见 [important_references.md](./reports/important_references.md) |
 | P1-LIT-02 | ABSeeker arXiv:2608.05102 | 已对照精读 | 与 TRACE 合读，见 trace_vs_abseeker_credit.md |
+| P1-LIT-03 | **OpenResearcher** arXiv:2603.20278 | **决策者认定参考价值较高**（2026-08-28） | [rl_search_data_landscape.md](./reports/rl_search_data_landscape.md) · [openresearcher_env_setup.md](./reports/openresearcher_env_setup.md) |
 
 ---
 
@@ -159,6 +160,8 @@
 |----|------|------|------|
 | P4-A01 | 设计并实现强模型 rollout 脚本（Claw-Eval / QCB 搜索任务） | 待办 | |
 | P4-A02 | 转换 HotpotQA/NQ 等为 OpenClaw tool-call 格式（RL 冷启动） | 待办 | |
+| P4-A02b | 撰写 RL 搜索数据/合成项目调研文档 | **已完成** | [rl_search_data_landscape.md](./reports/rl_search_data_landscape.md) |
+| P4-A02c | 撰写 OpenResearcher 环境构建指南（含 Claw 适配） | **已完成** | [openresearcher_env_setup.md](./reports/openresearcher_env_setup.md) |
 | P4-A03 | 构建 `data/search_sft_v1/`（目标 2k–5k 条） | 待办 | |
 | P4-A04 | 构建 `data/search_rl_v1/`（目标 500–1k 任务） | 待办 | |
 | P4-A05 | 构建 DPO 负样本 / pairs（可选，~1k） | 待办 | |
@@ -192,7 +195,7 @@
 |----|------|------|------|
 | P5-A01 | ClawGym 新增 search profile，启用 web_search / memory_search | 待办 | `clawgym_rl_rollout.py` |
 | P5-A02 | 扩展工具沙箱：mock SERP + 搜索缓存 | 待办 | `clawgym_tools.py` |
-| P5-A03 | slime 搜索 RL 适配 Qwen3.5 chat template | 待办 | 基于 Search-R1 |
+| P5-A03 | slime 搜索 RL 适配 Qwen3.5 chat template | 待办 | 基于 Search-R1；闭集见 openresearcher_env_setup.md |
 | P5-A04 | 搜索 SFT 数据 tokenization 与训练脚本 | 待办 | |
 | P5-A05 | 编写 `search_train/` 配置与 run 脚本 | 待办 | |
 | P5-A06 | 执行训练 job，监控 loss / reward / tool 分布 | 待办 | 需人批准提交 |

@@ -1,7 +1,7 @@
 # TRACE vs ABSeeker：长程 Search Agent 的 Credit 分配深度对比
 
 > Agent Search 能力提升项目 · Credit 分配专篇  
-> 版本：v0.2 | 日期：2026-08-27  
+> 版本：v0.3 | 日期：2026-08-28  
 > 论文：[TRACE](https://arxiv.org/html/2607.13988) · [ABSeeker](https://arxiv.org/html/2608.05102)  
 > **TRACE 状态**：⭐ 重要参考文献 · **决策者已精读**（2026-08-27）· 见 [important_references.md](./important_references.md)
 
@@ -376,6 +376,8 @@ flowchart TB
 
 ### 6.1 TRACE 接入点
 
+> **GT 版阻塞项**：见 §2.10（opener / thinking 未文档化）。**可落地 substitute**：§9 MA-TRACE（用 \(\hat{y}_g\) 替代 \(y^\*\)）。
+
 在现有 `clawgym_rl_rollout` GRPO loop 中：
 
 1. 保存每个 tool-call 边界后的 **可见 messages prefix** \(S_k\)
@@ -398,8 +400,9 @@ flowchart TB
 
 | 顺序 | 实验 | 成本 | 验证什么 |
 |------|------|------|----------|
+| 0 | MA-TRACE offline 诊断（§9.4–9.6 D1/D2） | 低 | turn 信号是否对齐 decisive step |
 | 1 | ABC-SFT only（reweight，无 RL） | 低 | step credit 对 SFT 是否够 |
-| 2 | GRPO + TRACE auxiliary | 中 | 纯 RL credit 是否涨 Claw-Eval |
+| 2 | GRPO + MA-TRACE（§9）或 GT-TRACE auxiliary | 中 | 纯 RL credit 是否涨 Claw-Eval |
 | 3 | ABC-SFT → ABC-GRPO | 高 | 全链路上限 |
 
 ---
@@ -420,9 +423,129 @@ flowchart TB
 
 ---
 
+## 9. GPC 变体：Model-Answer Turn Credit（MA-TRACE）
+
+> **状态**：GPC 内部假设 · 待 offline 验证 + 小规模 RL POC  
+> **动机**：§2.10 指出 TRACE 在 Qwen3-Thinking 上复现需定义 `final-answer opener` 与 thinking 壳；用 **本条 rollout 的 model answer** 作 probe target，可沿真实生成路径 teacher-force，避开 GT opener 模糊地带。
+
+### 9.1 与 TRACE 的差异（一张表）
+
+| 维度 | TRACE（论文） | MA-TRACE（GPC 提议） |
+|------|---------------|----------------------|
+| Probe target | Gold answer \(y^\*\) | 轨迹最终 assistant 答案 \(\hat{y}_g\) |
+| Scoring prefix | \(S_k\) + **未文档化的 opener** + \(y^\*\) | \(S_k\) + 本条轨迹 **真实 final thinking / answer 结构** + \(\hat{y}_g\) |
+| 适用场景 | 闭集 QA + 可靠 GT | ClawGym / Claw-Eval rollout；GT 仅用于 \(A^{\text{out}}\) |
+| 额外成本 | ref forward × tool turns | 同量级（rollout 后 batch ref forward） |
+| 主要风险 | opener OOD、CoT 泄露 GT | 错轨迹上 \(\Delta>0\) 可能奖励「更容易写错答」 |
+
+核心不变：仍用 **冻结 ref**、**tool 边界 \(S_k\)**、**log-ratio \(V_k\)**、**TD \(\delta_k\)**、**K-step backup**；只把 Eq.(5) 里的 \(y^\*\) 换成 \(\hat{y}_g\)。
+
+### 9.2 价值与 TD credit（model-answer 版）
+
+对组内第 \(g\) 条 rollout，记最终可评分答案串为 \(\hat{y}_g\)（含 chat template 下与 rollout 一致的 answer/thinking token 序列）。
+
+**Step 1 — prefix 上 model answer 的平均 log-prob：**
+
+\[
+\bar{\ell}_{g,k} = \frac{1}{|\hat{y}_g|}\sum_{t=1}^{|\hat{y}_g|} \log \pi_{\text{ref}}(\hat{y}_{g,t} \mid S_{g,k}, \hat{y}_{g,<t})
+\]
+
+**Step 2–3 — 与 TRACE 相同：**
+
+\[
+d_{g,k} = -\bar{\ell}_{g,k} + \epsilon, \quad V(S_{g,k}) = \log\frac{d_{g,0}}{d_{g,k}}, \quad \delta_{g,k} = V(S_{g,k+1}) - V(S_{g,k})
+\]
+
+经 K-step backup + terminal anchor 得 \(r^{\text{turn}}_{g,k}\)（公式同 §2.4，下标改为 per-trajectory model answer）。
+
+**直觉**：\(\delta_{g,k}>0\) 表示「第 \(k\) 次 tool 交互后，ref 更容易 **沿本条轨迹自己的交卷路径** 生成 \(\hat{y}_g\)」——progress 绑定 **inference 自洽性**，而非 ref 对 GT 的可预测性。
+
+### 9.3 与 GRPO outcome 混合：sign-aware 乘性缩放（POC 初版）
+
+轨迹级 outcome 仍为标准 GRPO：
+
+\[
+A^{\text{out}}_g = \frac{R_g - \bar{R}}{\sigma_R}
+\]
+
+**错误做法（已否决）**：无论 \(A^{\text{out}}\) 正负，对「促进步」一律 \(m_k = 1+x\)。在失败轨迹（\(A^{\text{out}}<0\)）上会把负 advantage **放大更负**，与「好步应少罚」相反。
+
+**统一规则（POC 采用）**：用 turn 信号 \(\Delta_{g,k} \equiv \delta_{g,k}\)（或 backup 后的 \(r^{\text{turn}}_{g,k}\)）的符号，与 outcome 对齐：
+
+\[
+m_{g,k} = 1 + x \cdot \mathrm{sign}(A^{\text{out}}_g) \cdot \mathrm{sign}(\Delta_{g,k})
+\]
+
+| \(A^{\text{out}}\) | \(\Delta_k\) | \(m_k\) | 语义 |
+|--------------------|--------------|---------|------|
+| \(>0\)（成功） | \(>0\) | \(1+x\) | 成功轨迹上的 progress 步 **加强** |
+| \(>0\) | \(<0\) | \(1-x\) | 成功轨迹上的退步步 **削弱** |
+| \(<0\)（失败） | \(>0\) | \(1-x\) | 失败轨迹上的 progress 步 **减罚**（负 advantage 绝对值变小） |
+| \(<0\) | \(<0\) | \(1+x\) | 失败轨迹上的退步步 **加重惩罚** |
+
+Per-token advantage（tool 交互 token，turn 内共享）：
+
+\[
+\hat{A}_{g,t} = m_{g,\text{turn}(t)} \cdot A^{\text{out}}_g
+\]
+
+**超参建议**：\(x \in [0.1, 0.2]\) 起；\(\Delta=0\) 时 \(m=1\)，等价纯 GRPO。
+
+**备选（与 TRACE 更同构）**：加性混合 \(\hat{A} = A^{\text{out}} + \alpha_{\text{turn}} r^{\text{turn}}\)（§2.5）；失败轨迹上 good step 可得到 **仍为负但 less negative** 或偶现 **正 \(\hat{A}\)**——若乘性 POC 信号太弱，可 ablation 加性版。
+
+**末轮 answer token**：主要由 \(A^{\text{out}}\) 监督；tool turn 才乘 \(m_k\)，避免 answer 段与 search credit 混用同一缩放。
+
+### 9.4 辅助诊断：Prefix Continuation Probe（不写进训练 loss）
+
+与 MA-TRACE **正交** 的 offline 工具，用于校验 \(\Delta_k\) 是否对齐「这一步对任务有用」：
+
+1. 取 **成功** rollout，在每个 tool 边界 \(S_k\) **截断**；
+2. 从 \(S_k\) **继续生成**（或 answer-only 短续写），测任务 success / EM；
+3. 比较 \(k\) 前后 success 差 → 该步是否 **decisive**。
+
+优点：不需 GT opener、保留 thinking 格式；缺点：每 prefix 一次生成，成本高，适合 **小样本诊断** 而非训练内环。
+
+**建议**：同一批 Claw-Eval trace 上并行算 \(\Delta_k(\hat{y}_g)\)、\(\Delta_k(y^\*)\)（若 GT 可用）、continuation success delta，看 Spearman 相关哪条更贴人工判读。
+
+### 9.5 风险与 guard
+
+| 风险 | 说明 | Guard |
+|------|------|-------|
+| 错答自洽 | 失败轨迹上 \(\hat{y}_g\) 错，但某 prefix 使 ref **更易生成该错答** → \(\Delta>0\) | 小 \(x\)；失败轨迹可 ablation「仅减罚、不加强退步的 \(1+x\)」 |
+| Progress ≠ 任务 progress | logprob gap 关闭 ≠ 搜到真证据 | 与 continuation / GT 版 \(\Delta\) 做相关性；decisive turn 应对齐 |
+| CoT 泄露 | prefix 含 policy reasoning，ref 可能靠文本线索猜 \(\hat{y}_g\) | 与 TRACE-Q3 同：mask / ablation；对比无 reasoning prefix |
+| 乘性不改符号 | 失败轨迹 good step 仍 \(\hat{A}<0\) | 若需更强 turn 信号，试加性 TRACE 混合 |
+
+**定位**：值得 **offline 验证 + 小规模 RL POC** 的 hypothesis；**非**已证明优于 TRACE 的成熟 recipe。
+
+### 9.6 ClawGym 接入与 POC 顺序
+
+在 §6.1 TRACE 接入点基础上：
+
+1. Rollout 保存每个 \(S_k\) + 完整 \(\hat{y}_g\)（含 template 下 thinking/answer token id 序列）；
+2. Rollout 开始时 snapshot \(\pi_{\text{ref}}\)；
+3. 对每条轨迹 batch 算 \(\bar{\ell}_{g,k}, \delta_{g,k}, r^{\text{turn}}_{g,k}\)；
+4. \(\hat{A}_{g,t} = m_{g,\text{turn}(t)} A^{\text{out}}_g\)，接入现有 clipped policy gradient。
+
+| 阶段 | 内容 | 验证什么 |
+|------|------|----------|
+| **D1** | 只诊断：强模型 Claw-Eval trace 上算 \(\Delta_k(\hat{y}_g)\) | decisive turn 是否与人工看 trace 一致 |
+| **D2** | D1 + continuation / \(\Delta_k(y^\*)\) 相关性 | MA-TRACE 信号是否比 GT-TRACE 更贴 progress |
+| **R1** | ClawGym 子集 GRPO baseline vs MA-TRACE（\(x=0.1\)） | EM / turn 数 / 冗余搜索是否改善 |
+| **R2** | 乘性 vs 加性（\(\alpha_{\text{turn}}=0.2\)）ablation | 失败轨迹 credit 是否足够 |
+
+**书面前置**（与 §2.10 共用）：定义 scoring token 序列（对齐 ClawGym/Qwen3 chat template）；明确 \(\hat{y}_g\) 从哪条 message、是否含 `` 块。
+
+### 9.7 与 §5.3 混合思路的关系
+
+§5.3 第 3 条「GRPO + TRACE 式 \(\delta_k\) auxiliary」在 GT opener 未澄清前 **阻塞**；MA-TRACE 可视为其 **可立即落地的 substitute**——outcome 仍用 verifiable reward + GRPO，turn 层用 model-answer log-ratio，不依赖未文档化的 final-answer opener。
+
+---
+
 ## 变更记录
 
 | 日期 | 变更 |
 |------|------|
 | 2026-08-27 | 初稿：TRACE vs ABSeeker credit 机制、公式、walkthrough、GPC POC |
 | 2026-08-27 | v0.2：TRACE 标重要参考文献/决策者已精读；§2.10 turn reward 复现疑问（opener、thinking 标签） |
+| 2026-08-28 | v0.3：§9 MA-TRACE（model-answer turn credit、sign-aware 乘性混合、continuation 诊断、POC 顺序） |
