@@ -1,9 +1,33 @@
 # OpenResearcher 环境构建指南（GPC · Claw 适配）
 
 > Agent Search 能力提升项目 · 阶段 4 数据 + 阶段 5 环境  
-> 版本：v0.2 | 日期：2026-08-28  
+> 版本：v0.3 | 日期：2026-09-03  
 > **决策者认定**：OpenResearcher **参考价值较高**（闭集 Q+A + 本地检索 + 长程 tool 范式）；见 [important_references.md](./important_references.md)  
 > 关联：[rl_search_data_landscape.md](./rl_search_data_landscape.md) · [phase5_train.md](../phases/phase5_train.md)
+
+---
+
+## 准备状态（2026-09-03）
+
+**已准备 OpenResearcher 训练环境及训练数据**（GPC 本机 `/data/OpenResearcher/`），可用于 slime GRPO 闭集 rollout 接入。
+
+| 项 | 路径 / 说明 | 状态 |
+|----|-------------|------|
+| conda 环境 | `openresearcher`（Java 21 + pyserini + faiss-cpu + tevatron） | ✅ |
+| 题源 Q+A | `gold_doc/` — **6,102** 题 + gold_docs | ✅ |
+| 训练语料 | `corpus/data/*.parquet` — ~1487 万 doc，~28GB | ✅ |
+| Dense 索引 | `indexes/qwen3-embedding-8b/*.pkl` — ~114GB | ✅ |
+| Embedding 模型 | `/data/models/Qwen3-Embedding-8B` | ✅ |
+| 检索服务脚本 | `search_eval/bcp/setup_or_search_server.sh`、`start_search_or_dense.sh`、`verify_or_search_api.sh` | ✅ |
+| Dense 检索 smoke | 本机 `:8700` 曾跑通 `/search` + `/get_content` | ✅（已停服释放内存） |
+
+**⚠️ 部署约束：环境 + 语料 + 索引过重（运行时内存 ~350GB+，磁盘 ~150GB+），不宜与训练 / SGLang 长期同机混跑，需额外服务器常驻部署检索服务。**
+
+| 规划 | 说明 |
+|------|------|
+| 检索专用机 | 目标根目录 `/mnt/code/gengpengchun/search_sever`（rsync 自 `/data/OpenResearcher/` + embedding 模型） |
+| 训练机 | slime GRPO；rollout 内 `--search_url http://<检索机IP>:8700` |
+| BCP 评测 | 与训练语料分离；BM25 @ `:8686`（~10 万 doc，轻量，可留在评测机） |
 
 ---
 
@@ -293,17 +317,19 @@ GPC 阶段 2 仍以 **Claw-Eval / QCB L2** 为主；BCP subset 作 **闭集对�
 
 ### Phase 4 — 数据与环境 smoke
 
-- [ ] 下载 OpenResearcher-Dataset 子集 + manifest  
-- [ ] （可选）下载 Corpus+index 子集或全量  
-- [ ] 改脚本指向 OR corpus 或使用 BCP 仅做 **eval 对照**  
-- [ ] 检索 API smoke（`/search` 有结果）  
-- [ ] Q+A → parquet 转换脚本（50 条）  
+- [x] 下载 Gold-Doc Q+A（6102）+ Corpus + Dense index 全量（`/data/OpenResearcher/`）  
+- [ ] 下载 OpenResearcher-Dataset 轨迹（97K，**SFT 可选**，RL 非必需）  
+- [x] 训练脚本指向 OR corpus（`start_search_or_dense.sh`，非 BCP 语料）  
+- [x] 检索 API smoke（dense `:8700` `/search` + `/get_content`）  
+- [ ] **额外服务器**部署常驻 dense 检索（`setup_or_search_server.sh` + rsync）  
+- [ ] Q+A → parquet 转换脚本（50 条 smoke manifest）  
 - [ ] 记录最长 `web_fetch` / `open` 正文长度（**待数据实测**）
 
 ### Phase 5 — 训练 env
 
+- [ ] 检索服务迁至专用机并对外提供 `:8700`  
 - [ ] ClawGym `search` profile 启用 web 工具  
-- [ ] slime GRPO 闭集 smoke（OpenResearcher Q+A + local search）  
+- [ ] slime GRPO 闭集 smoke（OpenResearcher Q+A + remote search）  
 - [ ] ClawGym GRPO 开网/mock smoke（Claw-Eval 子集）  
 - [ ] 纯 GRPO baseline 再叠 MA-TRACE / turn credit（阶段 3 后）
 
@@ -315,6 +341,7 @@ GPC 阶段 2 仍以 **Claw-Eval / QCB L2** 为主；BCP subset 作 **闭集对�
 |----|------|------|
 | OR-E1 | 默认 BCP 语料 ≠ 训练 corpus | §3.2 显式改路径 |
 | OR-E2 | 检索延迟 / RL 超时 | GPU Faiss、缓存、降并发 |
+| OR-E6 | Dense 服务内存 ~350GB+，与训练同机冲突 | **专用检索机** rsync 部署；训练机 HTTP 远程调用 |
 | OR-E3 | 工具 schema 不一致（R5） | 评测与训练均用 Claw schema；闭集仅作辅助池 |
 | OR-E4 | web_fetch 截断丢证据 | 实测长度；必要时扩展 fetch 或 mock find |
 | OR-E5 | TRACE 合成 QA 缺失 | 用 OR Dataset Q+A；TRACE credit 另 POC |
@@ -345,3 +372,4 @@ GPC 阶段 2 仍以 **Claw-Eval / QCB L2** 为主；BCP subset 作 **闭集对�
 |------|------|
 | 2026-08-28 | 初稿：OpenResearcher 数据/检索/训练接入；Claw 两工具适配；BCP 语料坑；checklist |
 | 2026-08-28 | v0.2：§0 URL 速查；6102 题 Corpus-Gold-Doc；Indexes 下载命令修正 |
+| 2026-09-03 | v0.3：§准备状态 — 训练环境/数据已就绪；dense 过重需额外服务器部署 |

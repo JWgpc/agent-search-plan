@@ -3,6 +3,12 @@
 > 配置与任务清单；runner 脚本阶段 2 待建。  
 > **决策文档**：[reports/search_benchmark_decision.md](../reports/search_benchmark_decision.md)
 
+## OpenResearcher 训练（2026-09-03）
+
+**已准备**训练环境（conda `openresearcher`）及三件套数据（`gold_doc` / `corpus` / `indexes`），本机路径 `/data/OpenResearcher/`。  
+Dense 检索语料过重（运行时 **~350GB+ 内存**），**需额外服务器**部署 `:8700` 检索服务；训练机通过 HTTP 远程调用。  
+详见 [openresearcher_env_setup.md](../reports/openresearcher_env_setup.md)。
+
 ## v0.1 套件
 
 | ID | Benchmark | 题量 | 代码路径 |

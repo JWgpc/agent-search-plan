@@ -88,4 +88,10 @@ python deploy_agent.py \
 
 ## 与 OpenResearcher 训练语料
 
-**BCP 仅作评测**；RL 训练若用 OpenResearcher-Corpus，须改 `start_search_service.sh` 路径（见 openresearcher_env_setup §3.2，R8）。
+**BCP 仅作评测**（~10 万 doc，BM25），**不能**当作 RL 训练语料。
+
+### 训练环境准备状态（2026-09-03）
+
+**已准备 OpenResearcher 训练环境及训练数据**（本机 `/data/OpenResearcher/`）：`gold_doc`（6102 题）、`corpus`（~28GB）、`indexes`（~114GB dense pkl）、embedding 模型、conda `openresearcher`。
+
+**⚠️ 语料 + 索引过重**：dense 检索启动后 **内存 ~350GB+**，不宜与训练同机长期混跑，**需额外服务器**常驻部署（规划路径 `/mnt/code/gengpengchun/search_sever`）。详见 [openresearcher_env_setup.md](../../reports/openresearcher_env_setup.md)。
