@@ -6,6 +6,8 @@
 
 | 组件 | 路径 | 说明 |
 |------|------|------|
+| **Agent ES（noise_weight）** | `agentic_es/` · [GitHub agent_ES](https://github.com/JWgpc/agent_ES) | ES 黑盒优化；rollout：`clawgym` / `general_agent` / **`bcp`**；详见 [agent_es_attempts.md](./reports/agent_es_attempts.md) |
+| BCP ES 入口 | `agentic_es/scripts/run_es_bcp.sh` | OpenResearcher rollout + BM25；语料 `build_bcp_es_corpus.py` |
 | ClawGym GRPO | `clawGym/ClawGym-Agents/RL/` | OpenClaw 沙箱 RL；**当前 deny web_search/memory_search** |
 | RL rollout | `clawGym/ClawGym-Agents/RL/clawgym_rl_rollout.py` | gateway 配置 L545–548 |
 | 沙箱工具 | `clawGym/ClawGym-Agents/RL/clawgym_tools.py` | 含 web_fetch，无 web_search |
@@ -28,6 +30,7 @@
 | QwenClawBench | `QwenClaw_new/QwenClawBench-main/` | 100 OpenClaw 真实任务 |
 | QCB 脚本 | `QwenClaw_new/QwenClawBench-main/scripts/benchmark.py` | 评测入口 |
 | tau2 KB 域 | `tau2-bench/src/tau2/domains/banking_knowledge/` | BM25 检索参考 |
+| search_eval v0.1 | `search_eval/` | BCP + Claw web + τ³-Banking；见 [search_eval/README.md](../../search_eval/README.md) |
 
 ## 部署
 
@@ -38,10 +41,10 @@
 
 ## 已知缺口（v1 需补齐）
 
-1. 无 `generate_with_openclaw_search.py` 类 OpenClaw 搜索 RL 管线  
-2. 无 BrowseComp / GAIA / WebArena harness  
+1. 无 `generate_with_openclaw_search.py` 类 OpenClaw 搜索 **GRPO** 管线（**BCP 闭集 ES 已跑通**，见 agent_es_attempts）  
+2. BrowseComp-Plus **官方 eval** 与 ES 内 eval 尚未统一登记到 `search_eval/baselines/`  
 3. Search-R1 未适配 Qwen3.5 chat template  
-4. 无统一 `search_eval/` 套件  
+4. search_eval **统一 runner / baseline JSON** 仍待建  
 
 ## 关键代码引用
 

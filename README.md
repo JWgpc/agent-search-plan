@@ -15,6 +15,7 @@
 | [reports/rl_search_data_landscape.md](./reports/rl_search_data_landscape.md) | RL 搜索训练数据与合成项目调研（阶段 4 输入） | v0.2 |
 | [reports/openresearcher_env_setup.md](./reports/openresearcher_env_setup.md) | OpenResearcher 环境构建 + Claw 适配（阶段 4/5） | v0.2 |
 | [reports/search_benchmark_decision.md](./reports/search_benchmark_decision.md) | **Search Benchmark 调研 + v0.1 选型**（BCP + Claw web + τ³-Banking） | v0.1 |
+| [reports/agent_es_attempts.md](./reports/agent_es_attempts.md) | **Agent ES 并行尝试**（noise_weight ES；BCP / ClawGym / GA） | v0.1 |
 | [00_overview.md](./00_overview.md) | 背景、目标、范围、现状诊断 | 初稿 |
 | [01_human_agent_roles.md](./01_human_agent_roles.md) | 六阶段人机分工总表 | 初稿 |
 | [02_milestones_timeline.md](./02_milestones_timeline.md) | 里程碑、时间线、依赖关系 | 初稿 |
@@ -60,6 +61,7 @@
 /dev/gpc_code/
   docs/agent_search/          ← 本计划文档（当前阶段）
   search_eval/                ← 阶段 2 评测配置（v0.1 已建，runner 待建）
+  agentic_es/                 ← Agent ES 训练代码 → GitHub JWgpc/agent_ES
   data/search_sft_v1/         ← 阶段 4：训练数据（待建）
   data/search_rl_v1/
 ```
@@ -74,4 +76,5 @@
 | 2026-08-27 | 新增五篇论文深度解读 `reports/five_papers_deep_dive.md` |
 | 2026-08-27 | 新增 TRACE vs ABSeeker credit 专篇 `reports/trace_vs_abseeker_credit.md` |
 | 2026-08-28 | v0.1 Search Benchmark 选型：BCP + Claw-Eval web + τ³-Banking；search_eval 配置 |
+| 2026-10-13 | 新增 `reports/agent_es_attempts.md`（BCP ES 等与 Search 主线并行实验） |
 | 2026-08-26 | 新增 `TASK_STATUS.md` 任务状态记录 |

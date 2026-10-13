@@ -4,8 +4,8 @@
 > **状态枚举**：`待办` | `进行中` | `已完成` | `阻塞` | `跳过`  
 > 更新本文件后请同步修改「最后更新」日期，重大变更可 commit 并 push。
 
-**最后更新**：2026-08-28  
-**当前阶段**：阶段 2 进行中（**v0.1 Benchmark 三套件已定**；baseline 待跑）  
+**最后更新**：2026-10-13  
+**当前阶段**：阶段 2 进行中（**v0.1 Benchmark 三套件已定**；baseline 待跑）；**并行**：Agent ES + BCP 训练已跑通  
 **GitHub**：[JWgpc/agent-search-plan](https://github.com/JWgpc/agent-search-plan)
 
 ---
@@ -21,6 +21,21 @@
 | 4 | 数据准备与质量核验 | 待办 | 未通过 |
 | 5 | 环境构建与训练 | 待办 | 未通过 |
 | 6 | 效果评估与迭代 | 待办 | 未通过 |
+
+---
+
+## 并行探索 — Agent ES（[agent_ES](https://github.com/JWgpc/agent_ES)）
+
+**说明**：与阶段 3「GRPO/SFT 路线」并行；详见 [reports/agent_es_attempts.md](./reports/agent_es_attempts.md)。
+
+| ID | 任务 | 状态 | 备注 |
+|----|------|------|------|
+| ES-A01 | noise_weight + SGLang `/es/*` hook 框架 | **已完成** | `agentic_es/` |
+| ES-A02 | ClawGym rollout + Lingxi base 长 run | **已完成** | runs 在 `/data/gpc/agentic_es/runs/` |
+| ES-A03 | BCP corpus + `run_es_bcp.sh` 闭集搜索 ES | **已完成** | OpenResearcher 子进程 rollout |
+| ES-A04 | BCP holdout 138 题 eval 曲线（trace reward run） | **已完成** | 见 `train.nohup.log`：before 0.239 → **best gen9 avg_reward=0.346**（run 未跑满 70 gen） |
+| ES-A05 | merged checkpoint 接入 `search_eval/bcp` 官方 harness | 待办 | 与 v0.1 baseline 对齐 |
+| ES-A06 | Claw 真 web 任务 ES / 或纳入 method memo | 待办 | 依赖 search profile |
 
 ---
 
@@ -203,6 +218,7 @@
 | P5-A06 | 执行训练 job，监控 loss / reward / tool 分布 | 待办 | 需人批准提交 |
 | P5-A07 | 定时触发 eval subset，输出 checkpoint 对比表 | 待办 | |
 | P5-A08 | 异常检测与告警报告（API 失败、reward hacking） | 待办 | |
+| P5-A09 | 将 Agent ES BCP 最佳 checkpoint 纳入 search_eval baseline 表 | 待办 | 见 [agent_es_attempts.md](./reports/agent_es_attempts.md) |
 
 ### 决策者
 

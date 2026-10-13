@@ -24,7 +24,8 @@
 
 | 池 | 环境 | 数据 | 目的 |
 |----|------|------|------|
-| **闭集 smoke** | OpenResearcher local dense | Dataset Q+A | GRPO 链路验证；对齐 TRACE 族 |
+| **闭集 smoke** | OpenResearcher local dense / BM25 | Dataset Q+A · BCP corpus | GRPO 链路验证；对齐 TRACE 族 |
+| **闭集 ES（已实践）** | 同上 + SGLang ES hook | `agentic_es/bcp_corpus` | [Agent ES](../reports/agent_es_attempts.md)：`run_es_bcp.sh`，无需 GRPO 反传 |
 | **Claw 主池** | web_search + web_fetch（mock 或 API） | Claw-Eval / 自 rollout | 生产 schema；阶段 6 主评测 |
 
 工具映射：`search`→`web_search`，`open`→`web_fetch`；**不设 `find`**（长页策略待 `web_fetch_length_survey.md` 实测）。
