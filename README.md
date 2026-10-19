@@ -77,4 +77,5 @@
 | 2026-08-27 | 新增 TRACE vs ABSeeker credit 专篇 `reports/trace_vs_abseeker_credit.md` |
 | 2026-08-28 | v0.1 Search Benchmark 选型：BCP + Claw-Eval web + τ³-Banking；search_eval 配置 |
 | 2026-10-13 | 新增 `reports/agent_es_attempts.md`（BCP ES 等与 Search 主线并行实验） |
+| 2026-10-19 | Agent ES：Lingxi-ES-1009-54 五套件评测结果写入 agent_es_attempts §3.4 |
 | 2026-08-26 | 新增 `TASK_STATUS.md` 任务状态记录 |

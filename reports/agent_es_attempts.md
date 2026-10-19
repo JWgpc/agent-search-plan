@@ -70,16 +70,40 @@
 - 脚本：`scripts/run_es_ga_smoke.sh`
 - **目的**：无 Docker 的快速 ES 链路验证（与搜索无关，属工程回归）
 
+### 3.4 最终跨套件评测（2026-10-09 交付）
+
+**候选模型**：`Lingxi-Agent-2.2-ES-1009-54`（`base + noise_weight`，对应 BCP ES **第 54 代** `merged_gen0054`；训练 run 见 §3.2 `bcp_es_g70_trace_20260928_064200`）。
+
+**训练设定（Agentic-ESOpt 风格）**：
+
+- 数据：**BrowseComp-Plus** 闭集语料（`bcp_corpus`，OpenResearcher rollout + BM25）
+- 迭代：**54 轮**（generation 0–53 完成并导出；与命名 `ES-1009-54` 一致）
+- 每轮 **8 组** population（`num_groups=8`），单组 **batch_size 8**（每候选 8 题 / step）
+- Base：`Lingxi-Agent-2.2`；其余超参见 `train.nohup.log` 中 `[setup]` 行
+
+**对外评测**（相对 base 的 Δ 为括号内数值；指标口径以各套件官方脚本为准）：
+
+| 模型 | DeepPlanning | Claw-Eval Pass^3 | Toolathlon | τ³-Banking | BrowseComp-Plus |
+|------|-------------:|-----------------:|-----------:|-----------:|----------------:|
+| Lingxi-Agent-2.2（base） | 30.4 | 62.8 | 40.7 | 9.8 | 23.9 |
+| Lingxi-Agent-2.2-ES-1009-54 | 28.3 (**−2.1**) | 61.9 (**−0.9**) | 42.6 (**+1.9**) | 10.5 (**+0.7**) | **34.0** (**+10.1**) |
+
+**简要解读**：
+
+- **BrowseComp-Plus** 提升最大（+10.1），与训练数据与任务形态一致；base **23.9** 与 §3.2 训练前 holdout `avg_reward≈0.239` 同量级。
+- **τ³-Banking / Toolathlon** 小幅正向，说明 ES delta 未完全局限于 BCP 检索格式。
+- **DeepPlanning / Claw-Eval** 略降，需在 method memo 中权衡「搜索专项 ES」与通用 agent 任务是否接受小幅 trade-off。
+
 ---
 
 ## 4. 与 Agent Search 六阶段计划的映射
 
 | Search 阶段 | Agent ES 已覆盖 | 仍缺 |
 |-------------|-----------------|------|
-| 2 Benchmark | BCP holdout 138 题作 **训练内 eval**；未统一写入 `search_eval/baselines/` | 与 v0.1 三套件对齐的 **官方 baseline JSON** |
-| 3 方法 | 提供 **ES 作为 GRPO/SFT 的第三候选** | 决策者 memo 未收录；与 TRACE/ABSeeker credit 未对比 |
-| 5 训练 | **已跑 BCP ES 长 run** | Claw **真 web**（Claw-Eval 65 题）ES/RL 未做 |
-| 6 评估 | 仅 BCP shard-5 子集 | Claw web + τ³-Banking 上未测 merged checkpoint |
+| 2 Benchmark | v0.1 中 **BCP + τ³-Banking + Claw-Eval** 已对 base / ES-54 出数（§3.4） | 统一写入 `search_eval/baselines/` JSON；DeepPlanning / Toolathlon 纳入套件说明 |
+| 3 方法 | 提供 **ES 作为 GRPO/SFT 的第三候选**；BCP 上已验证有效 | 决策者 memo；与 TRACE/ABSeeker credit 未对比 |
+| 5 训练 | **BCP ES 54 代** 可复现 checkpoint | Claw **真 web** 专项 ES/RL 未做 |
+| 6 评估 | §3.4 五套件横向表 | 复跑 sign-off、显著性 / 成本记录 |
 
 建议：阶段 5 的「双池架构」中，**闭集池**可继续用 `run_es_bcp.sh`；**Claw 主池**仍走 GRPO + search profile（见 [phase5_train.md](../phases/phase5_train.md)）。
 
@@ -87,12 +111,13 @@
 
 ## 5. 已知问题与下一步
 
-1. **Eval 与 BCP 官方 harness 未完全同构**：训练内指标以 `train.nohup.log` 的 `[eval] avg_reward` 为准；对外数字仍需 `search_eval/bcp/` 对 merged 模型复测。
+1. **训练内 vs 对外 BCP**：holdout 138 题以 `train.nohup.log` 的 `[eval] avg_reward` 为准；全量 **BrowseComp-Plus 34.0** 见 §3.4（与 gen54 holdout ≈34% 一致）。若需与 OpenResearcher 官方 leaderboard 完全同构，仍可在 `search_eval/bcp/` 留档复跑。
 2. **长轨迹稳定性**：rollout / history 中偶发 SGLang `400` on `/v1/completions`；需与 context、tool 格式一并监控。
 3. **算力与迭代成本**：70 gen × 8 候选 × 多轮 search，依赖检索与 rollout 并发调优（`eval_concurrency`、`tasks_per_group`）。
 4. **待办（文档/工程）**  
-   - [ ] 将最佳 `merged_gen*` 登记到 `search_eval/baselines/`  
-   - [ ] 在 `method_decision_memo` 中增加 ES vs GRPO 一行对比  
+   - [x] §3.4 五套件结果入文档（2026-10-19）  
+   - [ ] 将 `Lingxi-Agent-2.2-ES-1009-54` 登记到 `search_eval/baselines/`  
+   - [ ] 在 `method_decision_memo` 中增加 ES vs GRPO 与 trade-off 分析  
    - [ ] ClawGym 启用 web 后是否复用同一 ES 框架（`rollout-backend clawgym` + search profile）
 
 ---
@@ -131,3 +156,4 @@ cd /dev/gpc_code/docs/agent_search && ./scripts/push_github.sh
 |------|------|
 | 2026-10-13 | 初版：ClawGym / BCP / GA 三路 ES + BCP trace run 指标摘要 |
 | 2026-10-13 | 修正 BCP 指标来源为 `train.nohup.log` 的 avg_reward（非 history n_ok） |
+| 2026-10-19 | 新增 §3.4：Lingxi-ES-1009-54 五套件最终评测表 |
